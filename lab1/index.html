@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Лабораторная работа №1 бизнес-ланчей</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!-- Шапка сайта с заголовком и блоком навигации (header) -->
+<!-- Заголовок (h1) -->
+<!-- Блок навигации (nav) с ссылками (a) на другие страницы сайта -->
+<!-- (пункт меню "Контакты" должен быть якорной ссылкой, ведущей к футеру) -->
+<body>
+    <header>
+        <h1>VN FOOD</h1>
+
+        <nav>
+            <ul>
+                <li><a href="#">Меню</a></li>
+                <li><a href="#">О нас</a></li>
+                <li><a href="#contacts">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+<!--Блок с информацией о компании (section)
+Заголовок (h2)
+Изображение (img)
+Текст (p)
+Блок с преимуществами компании (section)
+Заголовок (h2)
+Маркированный список с преимуществами (ul). Описать минимум 3 преимущества
+Блок с самыми популярными блюдами (section)
+Заголовок (h2)
+Таблица (table). Минимум 5 блюд в таблице
+Футер с контактными данными (footer)
+Контактные данные (p, a)-->
+    <main>
+
+        <section class="about">
+            <h2>О компании</h2>
+
+            <img src="C:\Users\web\lunch.jpg" alt="Фото бизнес-ланча">
+
+            <p>
+                это вьетнамская кухня ктр доставляет в москве бизнес-ланчи
+            </p>
+        </section>
+
+        <section class="advantages">
+            <h2>Наши преимущества</h2>
+
+            <ul>
+                <li>Свежие ингредиенты</li>
+                <li>Быстрая доставка</li>
+                <li>Разнообразие меню</li>
+            </ul>
+        </section>
+
+        <section class="dishes">
+            <h2>Популярные блюда</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Блюдо</th>
+                        <th>Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>том ям</td>
+                        <td>1000 ₽</td>
+                    </tr>
+                    <tr>
+                        <td>фо бо</td>
+                        <td>1200 ₽</td>
+                    </tr>
+                    <tr>
+                        <td>пад тай</td>
+                        <td>1500 ₽</td>
+                    </tr>
+                    <tr>
+                        <td>ком ранг</td>
+                        <td>1800 ₽</td>
+                    </tr>
+                    <tr>
+                        <td>гой куан</td>
+                        <td>2000 ₽</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <footer id="contacts">
+        <p>Звоните нам.</p>
+        <a href="tel:+79603710486">+7960-371-04-86</a>
+    </footer>
+
+</body>
+</html>
