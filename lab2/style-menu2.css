@@ -1,0 +1,82 @@
+/* CSS riêng cho trang "Собрать ланч" (lưới món ăn, thẻ món, hover) */
+
+/* Khối chứa tất cả món trong 1 section (section > div.dishes): CSS Grid */
+.dishes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+/* Khối 1 món ăn (section > div.dishes > div.dish): Flexbox */
+.dish {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 40px;
+    border-radius: 35px;
+    cursor: pointer;
+    background-color: #ffffff;
+    filter: drop-shadow(17px 19px 24px rgba(0, 0, 0, 0.13));
+
+    /* border trong suốt sẵn để hover không làm lệch kích thước khối */
+    border: 2px solid transparent;
+}
+
+/* Hover: viền tomato quanh khối */
+.dish:hover {
+    border: 2px solid tomato;
+}
+
+.dish img {
+    width: 100%;
+    border-radius: 35px;
+}
+
+.dish__price {
+    font-size: 20px;
+}
+
+.dish__name {
+    font-size: 18px;
+
+    /* flex-grow: nếu tên món dài xuống 2 dòng, phần còn lại (khối lượng + nút)
+       vẫn bị đẩy xuống cùng 1 mức giữa các món trong cùng hàng */
+    flex-grow: 1;
+}
+
+.dish__weight {
+    color: gray;
+}
+
+/* Nút "Добавить" */
+.dish button {
+    background-color: #f1eee9;
+    margin-top: 15px;
+    padding: 10px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+/* Contextual selector: hover vào khối món thì đổi màu nút bên trong */
+.dish:hover button {
+    background-color: tomato;
+}
+
+/* ===== ADAPTIVE riêng cho trang "Собрать ланч" ===== */
+@media (max-width: 800px) {
+    .dishes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .menu-section h2 {
+        text-align: center;
+    }
+
+    .dishes {
+        grid-template-columns: 1fr;
+    }
+}
