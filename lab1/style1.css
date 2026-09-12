@@ -12,6 +12,10 @@ body {
     font-weight: 400;
     color: #000000;
 
+    /* sticky footer: main chiếm hết khoảng trống còn lại, footer luôn ở đáy */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header {
@@ -31,7 +35,8 @@ nav {
 
 nav ul {
     display: flex;
-    gap: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -48,9 +53,14 @@ a:hover {
     color: #ff6600;
 }
 
+nav a.active {
+    color: tomato;
+}
+
 main {
     margin: 0;
     padding: 20px;
+    flex: 1;
 }
 
 section {
@@ -84,4 +94,47 @@ footer {
 
 footer a {
     color: white;
+}
+
+/* ===== ADAPTIVE: главная страница (≤800px / ≤600px / ≤400px theo đề lab2) ===== */
+@media (max-width: 800px) {
+    .about img {
+        width: 500px;
+        height: auto;
+    }
+
+    /* nav: khoảng cách đều giữa các item, không thừa lề ở 2 đầu */
+    nav ul {
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        text-align: center;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav a {
+        font-size: 20px;
+    }
+
+    .about img {
+        width: 100%;
+        height: auto;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    table {
+        font-size: 12px;
+    }
 }
