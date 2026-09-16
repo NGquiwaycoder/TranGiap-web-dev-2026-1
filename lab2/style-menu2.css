@@ -1,13 +1,18 @@
 /* CSS riêng cho trang "Собрать ланч" (lưới món ăn, thẻ món, hover) */
 
-/* Khối chứa tất cả món trong 1 section (section > div.dishes): CSS Grid */
+
 .dishes {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
+
+    /*fix div thanh ul*/
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-/* Khối 1 món ăn (section > div.dishes > div.dish): Flexbox */
+/* Khối 1 món ăn (section > ul.dishes > li.dish): Flexbox */
 .dish {
     display: flex;
     flex-direction: column;
