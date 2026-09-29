@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №3 — Собрать ланч</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style-base3.css">
+    <link rel="stylesheet" href="style-menu3.css">
+    <link rel="stylesheet" href="style-form3.css">
+</head>
+<body>
+
+    <header>
+        <h1>VN FOOD</h1>
+
+        <nav>
+            <ul>
+                <li><a href="../lab1/index1.html">Главная</a></li>
+                <li><a href="index3.html" class="active">Меню</a></li>
+                <li><a href="#contacts">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <section class="menu-section">
+            <h2>Супы</h2>
+
+            <ul class="dishes">
+                <li class="dish">
+                    <img src="images/pho-bo.jpeg" alt="Фо Бо">
+                    <p class="dish__price">450 ₽</p>
+                    <p class="dish__name">Фо Бо</p>
+                    <p class="dish__weight">350 г</p>
+                    <button type="button">Добавить</button>
+                </li>
+
+                <li class="dish">
+                    <img src="images/tom-yam.jpeg" alt="Том Ям">
+                    <p class="dish__price">480 ₽</p>
+                    <p class="dish__name">Том Ям</p>
+                    <p class="dish__weight">350 г</p>
+                    <button type="button">Добавить</button>
+                </li>
+
+                <li class="dish">
+                    <img src="images/noodle-soup.jpeg" alt="Суп с лапшой, курицей и грибами шиитаке">
+                    <p class="dish__price">420 ₽</p>
+                    <p class="dish__name">Суп с лапшой, курицей и грибами шиитаке</p>
+                    <p class="dish__weight">400 г</p>
+                    <button type="button">Добавить</button>
+                </li>
+            </ul>
+        </section>
+
+        <section class="menu-section">
+            <h2>Главные блюда</h2>
+
+            <ul class="dishes">
+                <li class="dish">
+                    <img src="images/pad-thai.jpeg" alt="Пад Тай с курицей">
+                    <p class="dish__price">550 ₽</p>
+                    <p class="dish__name">Пад Тай с курицей</p>
+                    <p class="dish__weight">300 г</p>
+                    <button type="button">Добавить</button>
+                </li>
+
+                <li class="dish">
+                    <img src="images/com-rang.jpeg" alt="Ком Ранг">
+                    <p class="dish__price">600 ₽</p>
+                    <p class="dish__name">Ком Ранг</p>
+                    <p class="dish__weight">350 г</p>
+                    <button type="button">Добавить</button>
+                </li>
+
+                <li class="dish">
+                    <img src="images/goi-cuon.jpeg" alt="Гой Куон">
+                    <p class="dish__price">400 ₽</p>
+                    <p class="dish__name">Гой Куон</p>
+                    <p class="dish__weight">250 г</p>
+                    <button type="button">Добавить</button>
+                </li>
+            </ul>
+        </section>
+
+        <section class="menu-section">
+            <h2>Напитки</h2>
+
+            <ul class="dishes">
+                <li class="dish">
+                    <img src="images/iced-coffee.jpeg" alt="Вьетнамский кофе со льдом">
+                    <p class="dish__price">250 ₽</p>
+                    <p class="dish__name">Вьетнамский кофе со льдом</p>
+                    <p class="dish__weight">300 мл</p>
+                    <button type="button">Добавить</button>
+                </li>
+
+                <li class="dish">
+                    <img src="images/thai-tea.jpeg" alt="Тайский чай">
+                    <p class="dish__price">200 ₽</p>
+                    <p class="dish__name">Тайский чай</p>
+                    <p class="dish__weight">300 мл</p>
+                    <button type="button">Добавить</button>
+                </li>
+
+                <li class="dish">
+                    <img src="images/mint-lemonade.jpeg" alt="Лимонад с мятой и лаймом">
+                    <p class="dish__price">220 ₽</p>
+                    <p class="dish__name">Лимонад с мятой и лаймом</p>
+                    <p class="dish__weight">300 мл</p>
+                    <button type="button">Добавить</button>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Блок "Сделать заказ": заголовок + форма (đề lab3: đặt SAU khối main) -->
+    <section class="order">
+        <h2 class="order__title">Сделать заказ</h2>
+
+        <form class="order__form" action="https://httpbin.org/post" method="POST">
+
+            <!-- Блок с заказом клиента -->
+            <div class="order__column">
+                <h3 class="order__subtitle">Ваш заказ</h3>
+
+                <label class="order__label" for="soup">Суп</label>
+                <select class="order__field" id="soup" name="soup" required>
+                    <option value="">-- Выберите суп --</option>
+                    <option value="pho-bo">Фо Бо</option>
+                    <option value="tom-yam">Том Ям</option>
+                    <option value="noodle-soup">Суп с лапшой, курицей и грибами шиитаке</option>
+                </select>
+
+                <label class="order__label" for="main-dish">Главное блюдо</label>
+                <select class="order__field" id="main-dish" name="main_dish" required>
+                    <option value="">-- Выберите главное блюдо --</option>
+                    <option value="pad-thai">Пад Тай с курицей</option>
+                    <option value="com-rang">Ком Ранг</option>
+                    <option value="goi-cuon">Гой Куон</option>
+                </select>
+
+                <label class="order__label" for="drink">Напиток</label>
+                <select class="order__field" id="drink" name="drink" required>
+                    <option value="">-- Выберите напиток --</option>
+                    <option value="iced-coffee">Вьетнамский кофе со льдом</option>
+                    <option value="thai-tea">Тайский чай</option>
+                    <option value="mint-lemonade">Лимонад с мятой и лаймом</option>
+                </select>
+
+                <label class="order__label" for="comment">Комментарии к заказу</label>
+                <textarea class="order__field order__textarea" id="comment" name="comment"></textarea>
+            </div>
+
+            <!-- Блок с данными клиента -->
+            <div class="order__column">
+                <h3 class="order__subtitle">Ваши данные</h3>
+
+                <label class="order__label" for="name">Имя</label>
+                <input class="order__field" type="text" id="name" name="name" required>
+
+                <label class="order__label" for="email">Email</label>
+                <input class="order__field" type="email" id="email" name="email" required>
+
+                <div class="order__choice">
+                    <input type="checkbox" id="subscribe" name="subscribe" value="yes" checked>
+                    <label for="subscribe">Получать информацию о скидках и акциях</label>
+                </div>
+
+                <label class="order__label" for="phone">Номер телефона</label>
+                <input class="order__field" type="tel" id="phone" name="phone" required>
+
+                <label class="order__label" for="address">Адрес доставки</label>
+                <input class="order__field" type="text" id="address" name="address" required>
+                <p class="order__hint">Доставка осуществляется только по Москве</p>
+
+                <fieldset class="order__fieldset">
+                    <legend class="order__label">Время доставки:</legend>
+
+                    <div class="order__choice">
+                        <input type="radio" id="delivery-asap" name="delivery_type" value="asap" required>
+                        <label for="delivery-asap">Как можно скорее</label>
+                    </div>
+
+                    <div class="order__choice">
+                        <input type="radio" id="delivery-by-time" name="delivery_type" value="by_time">
+                        <label for="delivery-by-time">К указанному времени</label>
+                    </div>
+                </fieldset>
+
+                <label class="order__label" for="delivery-time">Укажите время доставки</label>
+                <input class="order__field" type="time" id="delivery-time" name="delivery_time"
+                    min="07:00" max="23:00" step="300">
+                <p class="order__hint">Доступное время доставки с 7:00 до 23:00</p>
+
+                <div class="order__buttons">
+                    <button class="order__button" type="reset">Сбросить</button>
+                    <button class="order__button" type="submit">Отправить</button>
+                </div>
+            </div>
+
+        </form>
+    </section>
+
+    <footer id="contacts">
+        <p>Звоните нам.</p>
+        <a href="tel:+79603710486">+7960-371-04-86</a>
+    </footer>
+
+</body>
+</html>
