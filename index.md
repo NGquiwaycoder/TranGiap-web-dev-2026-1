@@ -133,3 +133,106 @@ main { flex: 1; }
 
 ### 9. File `_redirects` (riêng của Netlify, không phải chuẩn HTML/CSS)
 Dòng `/   /index1.html   200` nghĩa là: ai vào domain gốc `/` thì Netlify âm thầm trả về nội dung `index1.html` nhưng vẫn giữ URL là `/` (gọi là **rewrite**, khác **redirect thật** dùng mã 301/302 sẽ đổi hẳn URL trên thanh địa chỉ). Cần file này vì bình thường mọi static hosting tự tìm đúng tên `index.html` cho `/` — sau khi đổi tên file thành `index1.html`, phải tự khai báo lại quy tắc đó, nếu không domain gốc sẽ ra lỗi 404.
+
+### 10. `ul`/`li` thay cho `div` (sửa theo góp ý của thầy)
+Danh sách món ăn bản chất là 1 danh sách → dùng `<ul class="dishes">` + `<li class="dish">` đúng ngữ nghĩa hơn `<div>`. Trình duyệt tự gắn cho `ul` dấu chấm (`list-style: disc`) + `padding-left` + `margin` (gọi là **User Agent Stylesheet** — style mặc định có sẵn của trình duyệt), nên phải "reset" bằng `list-style: none; margin: 0; padding: 0;`.
+
+### 11. `<meta name="viewport">` (bổ sung ở lab3 cho cả lab1, lab2)
+`<meta name="viewport" content="width=device-width, initial-scale=1.0">`: báo điện thoại "chiều rộng trang = chiều rộng màn hình thật, không phóng to/thu nhỏ". Thiếu dòng này, điện thoại giả lập màn ~980px rồi thu nhỏ cả trang → `@media (max-width: 600px)` không bao giờ kích hoạt. Đề lab2 có yêu cầu dòng này.
+
+==========================================================================
+LAB 3 — Form đặt hàng (lab3/index3.html + style-base3.css + style-menu3.css + style-form3.css)
+==========================================================================
+
+### 1. `<form action="..." method="POST">`
+- `action`: địa chỉ server nhận dữ liệu khi bấm "Отправить" (ở đây `https://httpbin.org/post` — trang test, trả lại đúng những gì mình gửi để kiểm tra).
+- `method="POST"`: gửi dữ liệu trong **thân (body)** của request HTTP, không hiện lên thanh địa chỉ. Khác `GET` — dữ liệu bị gắn thẳng vào URL dạng `?name=...&email=...` (lộ ra, giới hạn độ dài).
+- Dữ liệu gửi đi có dạng cặp **`name` = `value`**: thuộc tính `name` của mỗi ô nhập là "tên trường" server nhận được. Ô nào không có `name` thì KHÔNG được gửi.
+
+### 2. `<label for="id">` — gắn nhãn với ô nhập
+`for` của label trùng với `id` của input/select/textarea → trình duyệt hiểu 2 cái là 1 cặp: bấm vào chữ nhãn cũng focus/tick vào ô, screen reader đọc đúng tên ô. Đề bắt buộc mọi label phải gắn kiểu này.
+
+### 3. Các loại ô nhập (`<input type="...">`)
+| type | Dùng cho | Trình duyệt tự làm gì |
+|---|---|---|
+| `text` | tên, địa chỉ | ô chữ thường |
+| `email` | email | tự kiểm tra có dạng `a@b.c` mới cho gửi |
+| `tel` | số điện thoại | trên điện thoại hiện bàn phím số |
+| `checkbox` | đăng ký nhận tin | ô tick; `checked` = tick sẵn mặc định. Chỉ khi tick mới gửi `subscribe=yes` |
+| `radio` | chọn thời gian giao | chỉ chọn được 1 trong nhóm — các radio **cùng `name`** tạo thành 1 nhóm |
+| `time` | giờ giao | ô chọn giờ; `min="07:00" max="23:00"` giới hạn khoảng, `step="300"` = bước 300 giây = 5 phút |
+
+### 4. `<select>` + `<option>`
+- `select` là ô xổ xuống; mỗi `option` là 1 lựa chọn. Chữ hiển thị (`Фо Бо`) khác giá trị gửi đi (`value="pho-bo"`) — server nhận `soup=pho-bo`, dễ xử lý hơn chữ tiếng Nga.
+- Option đầu `value=""` ("-- Выберите суп --") là "placeholder": kết hợp với `required`, nếu người dùng chưa chọn món thật thì value rỗng → form không cho gửi.
+
+### 5. `required` — bắt buộc nhập
+Thuộc tính boolean (chỉ cần có mặt, không cần giá trị). Ô trống thì trình duyệt tự chặn gửi form và hiện thông báo — không cần JavaScript. Với radio, chỉ cần 1 radio trong nhóm có `required` là cả nhóm bắt buộc.
+
+### 6. `<textarea>`, `<fieldset>` + `<legend>`
+- `textarea`: ô nhập **nhiều dòng** (bình luận). Khác `input` ở chỗ có thẻ đóng `</textarea>`.
+- `fieldset`: gom 1 nhóm ô liên quan (2 radio chọn thời gian); `legend`: tiêu đề của nhóm đó ("Время доставки:"). Mặc định `fieldset` có viền + padding → reset bằng `border: none; padding: 0`. Lưu ý: `margin` đặt trên `legend` bị trình duyệt bỏ qua, nên khoảng cách phải đặt trên chính `fieldset`.
+
+### 7. `<button type="reset">` / `type="submit"` / `type="button"`
+- `submit`: gửi form (nút mặc định nếu không ghi `type` và nằm trong form).
+- `reset`: đưa mọi ô về giá trị ban đầu (checkbox về lại trạng thái tick sẵn).
+- `button`: nút thường, không làm gì với form — dùng cho nút "Добавить" để khỏi vô tình gửi form.
+
+### 8. Chia 2 cột bằng Grid, co lại 1 cột trên màn hẹp
+`.order__form { display: grid; grid-template-columns: 1fr 1fr; }` chia form thành 2 cột bằng nhau; `@media (max-width: 800px)` đổi thành `1fr` (1 cột) và ô nhập `width: 100%` để không tràn màn hình điện thoại.
+
+==========================================================================
+LAB 4 — JavaScript: hiển thị món bằng DOM + chọn món + tính tiền
+(lab4/index4.html + dishes4.js + display4.js + order4.js)
+==========================================================================
+
+### 1. Nhúng JS bằng `<script src="..." defer>`
+- File JS riêng (đề cấm viết JS trực tiếp trong HTML — rule `inline-script-disabled` của HTMLHint).
+- `defer`: trình duyệt tải file song song nhưng **chỉ chạy sau khi dựng xong toàn bộ HTML**, và chạy **đúng thứ tự khai báo** (dishes4 → display4 → order4). Nhờ vậy script tìm được các thẻ `ul.dishes`, form... (nếu chạy sớm hơn thì các thẻ đó chưa tồn tại → `null`).
+- Biến `const dishes` khai báo ở cấp ngoài cùng của `dishes4.js` dùng được ở 2 file sau vì các script thường (không phải module) chia sẻ chung 1 phạm vi toàn cục.
+
+### 2. Mảng object — `dishes4.js`
+- **Object** `{ keyword: 'pho-bo', price: 450, ... }`: gom nhiều thông tin của 1 món vào 1 biến, truy cập bằng dấu chấm `dish.price`.
+- **Mảng** `[ {...}, {...} ]`: danh sách nhiều object. `keyword` là mã Latin duy nhất cho mỗi món, dùng để tìm món và gửi lên server.
+- `const`: biến không gán lại được (nhưng nội dung object/mảng bên trong vẫn sửa được). `let`: biến gán lại được (dùng cho `total` vì cộng dồn).
+
+### 3. DOM — tạo thẻ bằng JavaScript (`display4.js`)
+**DOM** (Document Object Model) = cây object mà trình duyệt dựng từ HTML; JS thao tác trên cây này để thêm/sửa/xoá thẻ trên trang.
+- `document.createElement('li')`: tạo thẻ mới (chưa hiện trên trang).
+- `.className = 'dish'`: gán class. `.textContent = '...'`: gán chữ bên trong (an toàn, không bị hiểu nhầm thành HTML).
+- `.dataset.dish = 'pho-bo'` ↔ thuộc tính HTML `data-dish="pho-bo"`: **data-атрибут** — thuộc tính tự đặt tên (bắt đầu bằng `data-`) để gắn dữ liệu riêng vào thẻ. Ở đây lưu keyword để khi bấm nút biết đó là món nào.
+- `.append(a, b, c)`: gắn các thẻ con vào thẻ cha; gắn vào 1 thẻ đã có trên trang thì thẻ mới mới hiện ra.
+- `document.querySelector('.dishes[data-category="soup"]')`: tìm **1** thẻ đầu tiên khớp CSS selector. `querySelectorAll(...)`: tìm **tất cả**, trả về danh sách.
+- Template string `` `images/${dish.image}.jpeg` ``: chuỗi dùng dấu backtick, chèn biến trực tiếp bằng `${...}` thay vì cộng chuỗi.
+
+### 4. Sắp xếp `sort()` + `localeCompare()`
+```js
+const sortedDishes = [...dishes].sort((a, b) => a.name.localeCompare(b.name));
+```
+- `sort(hàmSoSánh)`: hàm nhận 2 phần tử `a`, `b`, trả số âm nếu `a` đứng trước, dương nếu `b` đứng trước.
+- `localeCompare`: so sánh chuỗi theo đúng bảng chữ cái ngôn ngữ (đúng thứ tự tiếng Nga А→Я), khác so sánh `<`/`>` chỉ theo mã ký tự.
+- `[...dishes]`: tạo bản sao mảng rồi mới sắp xếp — vì `sort()` sửa trực tiếp mảng gốc.
+- `(a, b) => ...`: **arrow function** — cách viết hàm ngắn gọn.
+
+### 5. `forEach`, `find`, `some`, `Object.keys`
+- `mảng.forEach((phầnTử) => {...})`: chạy hàm cho **từng** phần tử.
+- `mảng.find((dish) => dish.keyword === keyword)`: trả về phần tử **đầu tiên** thoả điều kiện (dùng data-атрибут để tìm món trong mảng — đúng yêu cầu đề).
+- `mảng.some(...)`: `true` nếu **ít nhất 1** phần tử thoả điều kiện (dùng để biết đã chọn món nào chưa).
+- `Object.keys(obj)`: lấy danh sách tên thuộc tính của object → `['soup', 'main', 'drink']`.
+- `===`: so sánh chặt (cả giá trị lẫn kiểu dữ liệu), nên dùng thay cho `==`.
+
+### 6. Sự kiện — `addEventListener` + event delegation
+- `phầnTử.addEventListener('click', hàm)`: khi có sự kiện `click` thì chạy hàm.
+- **Event delegation**: thay vì gắn sự kiện cho từng nút "Добавить" (9 nút, lại được tạo động), chỉ gắn **1 lần ở `document`**. Sự kiện click "nổi bọt" (bubbling) từ nút lên tới `document`, ở đó kiểm tra `event.target.closest('.dish button')` xem có phải bấm đúng nút món ăn không.
+- `closest(selector)`: đi ngược lên các thẻ cha, trả về thẻ gần nhất khớp selector (hoặc `null`).
+- Sự kiện `reset` của form: bấm "Сбросить" thì xoá luôn các món đã chọn.
+
+### 7. Hiện/ẩn phần tử + đổi class bằng JS
+- `.hidden = true/false` ↔ thuộc tính HTML `hidden`: ẩn/hiện thẻ ("Ничего не выбрано" và khối tóm tắt luân phiên nhau). Lưu ý: nếu CSS đặt `display` cho thẻ đó thì sẽ đè mất tác dụng của `hidden` — vì vậy `.order__summary` không có `display` trong CSS.
+- `classList.toggle('dish--selected', điềuKiện)`: thêm class nếu điều kiện đúng, gỡ nếu sai → viền thẻ món đã chọn, bỏ viền các thẻ khác cùng loại. `--selected` là **modifier** trong quy ước BEM (trạng thái của khối).
+
+### 8. `<input type="hidden">` — gửi keyword lên server
+Ô ẩn không hiện trên trang nhưng **vẫn được gửi cùng form**. Khi chọn món, JS gán `input.value = dish.keyword` → server nhận `soup=tom-yam&main_dish=com-rang&drink=thai-tea` (keyword Latin, đúng yêu cầu đề), trong khi người dùng chỉ thấy tên + giá tiếng Nga.
+
+### 9. ESLint
+File JS phải qua ESLint với `eslint.config.mjs` của thầy (thụt lề 4 space, có `;` cuối lệnh, dấu cách quanh toán tử, dòng ≤ 80 ký tự, không dùng biến/hàm trước khi khai báo...). Kiểm tra bằng lệnh `npx eslint lab4/*.js` hoặc extension ESLint trong VS Code.
