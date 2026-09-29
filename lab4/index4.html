@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №4 — Собрать ланч</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style-base4.css">
+    <link rel="stylesheet" href="style-menu4.css">
+    <link rel="stylesheet" href="style-form4.css">
+
+    <!-- defer: chạy script SAU khi HTML đã dựng xong, theo đúng thứ tự khai báo -->
+    <script src="dishes4.js" defer></script>
+    <script src="display4.js" defer></script>
+    <script src="order4.js" defer></script>
+</head>
+<body>
+
+    <header>
+        <h1>VN FOOD</h1>
+
+        <nav>
+            <ul>
+                <li><a href="../lab1/index1.html">Главная</a></li>
+                <li><a href="index4.html" class="active">Меню</a></li>
+                <li><a href="#contacts">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Thẻ món KHÔNG viết sẵn trong HTML: display4.js tạo và chèn vào các ul.dishes theo data-category -->
+    <main>
+
+        <section class="menu-section">
+            <h2>Супы</h2>
+            <ul class="dishes" data-category="soup"></ul>
+        </section>
+
+        <section class="menu-section">
+            <h2>Главные блюда</h2>
+            <ul class="dishes" data-category="main"></ul>
+        </section>
+
+        <section class="menu-section">
+            <h2>Напитки</h2>
+            <ul class="dishes" data-category="drink"></ul>
+        </section>
+
+    </main>
+
+    <section class="order">
+        <h2 class="order__title">Сделать заказ</h2>
+
+        <form class="order__form" action="https://httpbin.org/post" method="POST">
+
+            <!-- Блок с заказом клиента: nội dung do order4.js điền -->
+            <div class="order__column">
+                <h3 class="order__subtitle">Ваш заказ</h3>
+
+                <p class="order__empty">Ничего не выбрано</p>
+
+                <div class="order__summary" hidden>
+                    <div class="order__item">
+                        <p class="order__category">Суп</p>
+                        <p class="order__value" id="order-soup">Блюдо не выбрано</p>
+                    </div>
+
+                    <div class="order__item">
+                        <p class="order__category">Главное блюдо</p>
+                        <p class="order__value" id="order-main">Блюдо не выбрано</p>
+                    </div>
+
+                    <div class="order__item">
+                        <p class="order__category">Напиток</p>
+                        <p class="order__value" id="order-drink">Напиток не выбран</p>
+                    </div>
+
+                    <div class="order__item">
+                        <p class="order__category">Стоимость заказа</p>
+                        <p class="order__total">0₽</p>
+                    </div>
+                </div>
+
+                <!-- Input ẩn: gửi keyword (tiếng Latin) của món đã chọn lên server -->
+                <input type="hidden" id="input-soup" name="soup">
+                <input type="hidden" id="input-main" name="main_dish">
+                <input type="hidden" id="input-drink" name="drink">
+
+                <label class="order__label" for="comment">Комментарии к заказу</label>
+                <textarea class="order__field order__textarea" id="comment" name="comment"></textarea>
+            </div>
+
+            <!-- Блок с данными клиента (giữ nguyên từ lab3) -->
+            <div class="order__column">
+                <h3 class="order__subtitle">Ваши данные</h3>
+
+                <label class="order__label" for="name">Имя</label>
+                <input class="order__field" type="text" id="name" name="name" required>
+
+                <label class="order__label" for="email">Email</label>
+                <input class="order__field" type="email" id="email" name="email" required>
+
+                <div class="order__choice">
+                    <input type="checkbox" id="subscribe" name="subscribe" value="yes" checked>
+                    <label for="subscribe">Получать информацию о скидках и акциях</label>
+                </div>
+
+                <label class="order__label" for="phone">Номер телефона</label>
+                <input class="order__field" type="tel" id="phone" name="phone" required>
+
+                <label class="order__label" for="address">Адрес доставки</label>
+                <input class="order__field" type="text" id="address" name="address" required>
+                <p class="order__hint">Доставка осуществляется только по Москве</p>
+
+                <fieldset class="order__fieldset">
+                    <legend class="order__label">Время доставки:</legend>
+
+                    <div class="order__choice">
+                        <input type="radio" id="delivery-asap" name="delivery_type" value="asap" required>
+                        <label for="delivery-asap">Как можно скорее</label>
+                    </div>
+
+                    <div class="order__choice">
+                        <input type="radio" id="delivery-by-time" name="delivery_type" value="by_time">
+                        <label for="delivery-by-time">К указанному времени</label>
+                    </div>
+                </fieldset>
+
+                <label class="order__label" for="delivery-time">Укажите время доставки</label>
+                <input class="order__field" type="time" id="delivery-time" name="delivery_time"
+                    min="07:00" max="23:00" step="300">
+                <p class="order__hint">Доступное время доставки с 7:00 до 23:00</p>
+
+                <div class="order__buttons">
+                    <button class="order__button" type="reset">Сбросить</button>
+                    <button class="order__button" type="submit">Отправить</button>
+                </div>
+            </div>
+
+        </form>
+    </section>
+
+    <footer id="contacts">
+        <p>Звоните нам.</p>
+        <a href="tel:+79603710486">+7960-371-04-86</a>
+    </footer>
+
+</body>
+</html>

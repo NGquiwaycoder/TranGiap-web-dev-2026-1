@@ -1,0 +1,145 @@
+/* CSS cho khối "Сделать заказ" (form đặt hàng) — lab4 */
+
+.order {
+    padding: 20px;
+}
+
+.order__title {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Chia form thành 2 cột bằng Grid: "Ваш заказ" | "Ваши данные" */
+.order__form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Mỗi cột xếp các phần tử theo chiều dọc */
+.order__column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.order__subtitle {
+    font-size: 22px;
+    font-weight: 400;
+    margin: 0 0 20px 0;
+}
+
+/* Khối tóm tắt "Ваш заказ" (lab4). Không đặt display cho .order__summary
+   để thuộc tính hidden (JS bật/tắt) vẫn ẩn được nó */
+.order__empty {
+    font-size: 18px;
+    margin: 0 0 10px 0;
+}
+
+.order__item {
+    margin: 0 0 20px 0;
+}
+
+.order__category {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.order__value {
+    font-size: 18px;
+    margin: 4px 0 0 0;
+}
+
+.order__total {
+    font-size: 22px;
+    margin: 4px 0 0 0;
+}
+
+.order__label {
+    font-size: 18px;
+    margin: 15px 0 8px 0;
+}
+
+/* Kích thước chung cho input / select / textarea */
+.order__field {
+    width: 300px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid #555555;
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.order__textarea {
+    height: 120px;
+    padding: 10px;
+    resize: vertical;
+}
+
+/* Checkbox / radio nằm cùng hàng với label của nó */
+.order__choice {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 0 0 0;
+    font-size: 18px;
+}
+
+/* fieldset mặc định có viền + padding, bỏ đi cho giống mockup */
+.order__fieldset {
+    border: none;
+    margin: 15px 0 0 0;
+    padding: 0;
+}
+
+/* margin của legend bị trình duyệt bỏ qua bên trong fieldset,
+   nên khoảng cách phía trên được đặt ở chính .order__fieldset */
+.order__fieldset legend {
+    margin: 0;
+    padding: 0;
+}
+
+.order__hint {
+    margin: 6px 0 0 0;
+    font-size: 15px;
+    font-style: italic;
+}
+
+.order__buttons {
+    display: flex;
+    gap: 8px;
+    margin: 20px 0 0 0;
+}
+
+.order__button {
+    width: 146px;
+    height: 36px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.order__button:hover {
+    border-color: tomato;
+    color: tomato;
+}
+
+/* ===== ADAPTIVE: màn hẹp thì 2 cột thành 1 cột, ô nhập giãn hết chiều rộng ===== */
+@media (max-width: 800px) {
+    .order__form {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .order__field {
+        width: 100%;
+    }
+}
