@@ -236,3 +236,89 @@ const sortedDishes = [...dishes].sort((a, b) => a.name.localeCompare(b.name));
 
 ### 9. ESLint
 File JS phải qua ESLint với `eslint.config.mjs` của thầy (thụt lề 4 space, có `;` cuối lệnh, dấu cách quanh toán tử, dòng ≤ 80 ký tự, không dùng biến/hàm trước khi khai báo...). Kiểm tra bằng lệnh `npx eslint lab4/*.js` hoặc extension ESLint trong VS Code.
+
+==========================================================================
+LAB 5 — Thêm món + loại mới, lọc món theo kind
+(lab5/index5.html + dishes5.js + display5.js + filter5.js + order5.js)
+==========================================================================
+
+### 1. Dữ liệu: 30 món, thêm thuộc tính `kind`
+- 5 category × 6 món: `soup`, `main`, `salad`, `drink`, `dessert`.
+- `kind` = giá trị để lọc, phải **trùng** với `data-kind` của nút lọc: `fish/meat/veg` (súp, món chính, salad), `cold/hot` (đồ uống), `small/medium/large` (tráng miệng). Số lượng mỗi kind đúng bảng trong đề.
+- Nguồn: món + giá + ảnh thật của quán K-T (project `kt-cafe`); chỗ K-T không có (súp chay, salad chay, tráng miệng) lấy từ `menu.zip` của thầy. Ảnh được đưa về `.webp` (nhẹ hơn ~10 lần so với JPG).
+
+### 2. Nút lọc + `data-kind`
+```html
+<div class="filters" data-category="soup">
+    <button class="filters__button" type="button" data-kind="fish">рыбный</button>
+```
+- `data-category` trên khối nút: cho JS biết đang lọc mục nào. `data-kind` trên từng nút: lọc theo giá trị nào.
+- Khi tạo thẻ món, `display5.js` gắn thêm `card.dataset.kind = dish.kind` → thẻ cũng có `data-kind` để so sánh.
+
+### 3. Lọc bằng cách ẨN thẻ, không xoá (`filter5.js`)
+```js
+const isHidden = kind !== null && card.dataset.kind !== kind;
+card.classList.toggle('dish--hidden', isHidden);
+```
+- Thẻ không đúng kind → thêm class `dish--hidden` (CSS: `display: none`). `kind = null` = bỏ lọc → gỡ class ở mọi thẻ.
+- **Tại sao ẩn chứ không xoá/vẽ lại?** Thẻ vẫn còn trong DOM nên món đã chọn không bị mất khỏi form và viền "đã chọn" vẫn giữ — đúng yêu cầu "выбор не должен сброситься".
+- Không dùng thuộc tính `hidden` vì `.dish` có `display: flex` trong CSS sẽ đè mất `hidden` → phải dùng class riêng.
+
+### 4. Class `active` trên nút lọc — bật/tắt
+- Bấm nút: gỡ `active` khỏi mọi nút cùng mục, gắn `active` cho nút vừa bấm, lọc theo `data-kind` của nó.
+- Bấm lại đúng nút đang `active` (`classList.contains('active')` = true): chỉ gỡ class + hiện lại tất cả (`return` sớm để không gắn lại).
+- `classList.add` / `remove` / `contains` / `toggle`: thêm / xoá / kiểm tra có không / bật-tắt 1 class.
+
+### 5. Ảnh cùng khung vuông: `aspect-ratio` + `object-fit`
+- `aspect-ratio: 1 / 1`: ép khung ảnh luôn vuông (cao = rộng) dù ảnh gốc tỉ lệ nào.
+- `object-fit: contain`: thu ảnh vừa khít vào khung, không cắt, không méo. (`cover` thì lấp đầy khung nhưng cắt bớt mép.)
+- `background-color` của `img`: lộ ra phía sau phần trong suốt của ảnh tách nền (ảnh K-T).
+
+==========================================================================
+LAB 6 — Khối combo, transform, kiểm tra đơn + thông báo
+(lab6/index6.html + style-combo6.css + check6.js)
+==========================================================================
+
+### 1. Cấu trúc khối combo: Grid lồng Flex lồng Flex
+- `.combos__grid`: **grid** 3 cột (`repeat(3, 1fr)`) → 6 ô = 5 combo + 1 ô tráng miệng.
+- `.combo`: **flex** (mặc định trục ngang) → các món trong 1 combo nằm cạnh nhau.
+- `.combo__item`: **flex** với `flex-direction: column` (trục chính từ trên xuống) → icon ở trên, chữ ở dưới.
+- Ghi chú tráng miệng `font-size: 10pt`, chữ chú thích `12pt` → nhỏ hơn đúng **2 пункта** (pt = point, đơn vị in ấn, 1pt = 1/72 inch).
+
+### 2. `transform`: `translateY` + `scale`
+```css
+.combo__item img { transition: transform 0.3s; }
+.combo__item img:hover { transform: translateY(-10px) scale(1.2); }
+```
+- `translateY(-10px)`: dịch phần tử lên 10px (số âm = lên, dương = xuống).
+- `scale(1.2)`: phóng to 1.2 lần (1 = kích thước gốc).
+- Viết 2 hàm cách nhau bằng dấu cách trong cùng 1 `transform` → áp dụng cùng lúc.
+- `transform` **không làm xô lệch** các phần tử xung quanh (chỉ đổi cách vẽ, không đổi chỗ chiếm trong bố cục) — khác đổi `width`/`margin`.
+- `transition: transform 0.3s`: thay vì nhảy ngay, trình duyệt vẽ chuyển động mượt trong 0.3 giây (cả lúc rê vào lẫn rê ra).
+
+### 3. Kiểm tra combo (`check6.js`)
+- Mảng `combos` liệt kê 5 combo hợp lệ. `isValidCombo()`: hợp lệ khi có **đúng 1** combo mà mọi loại trong combo đều đã chọn VÀ mọi loại ngoài combo đều chưa chọn (`combo.includes(category) === isChosen(category)`). Tráng miệng không xét → thêm vào combo nào cũng được.
+- `includes(x)`: mảng có chứa `x` không. `every(...)`: `true` khi **mọi** phần tử thoả điều kiện (ngược với `some` — ít nhất 1).
+- Không hợp lệ thì chọn thông báo theo thứ tự điều kiện `if` (đúng bảng 5 thông báo của đề): chưa chọn gì → chỉ có đồ uống/tráng miệng → chỉ có súp → chỉ có salad → còn lại là thiếu đồ uống.
+
+### 4. Chặn gửi form: `preventDefault()`
+- `event.preventDefault()`: huỷ hành động mặc định của sự kiện. Với `submit` (hoặc click vào nút submit) → form **không được gửi**.
+- Bắt ở 2 chỗ:
+  - `click` trên nút "Отправить": chạy **trước** bước trình duyệt tự kiểm tra các ô `required` → thiếu món là hiện thông báo ngay dù tên/email còn trống (đúng mockup).
+  - `submit` trên form: chốt chặn cuối đúng lúc form thật sự được gửi (đề: "скрипт должен запускаться, когда пользователь отправляет форму").
+
+### 5. Thông báo tạo động bằng JS
+- Mỗi lần thiếu món: `createElement` tạo `div.notification` + `p` + `button`, rồi `document.body.append(...)` gắn vào trang. Trước khi tạo, xoá thông báo cũ (nếu có) → không bao giờ có 2 cái chồng nhau.
+- Bấm "Окей 👌": `notification.remove()` — xoá hẳn phần tử khỏi DOM.
+- `button.focus()`: đưa con trỏ bàn phím vào nút → bấm Enter là đóng được.
+
+### 6. Định vị thông báo: `position: fixed` + căn giữa
+```css
+position: fixed; top: 50%; left: 50%;
+transform: translate(-50%, -50%); z-index: 10;
+```
+- `fixed`: vị trí tính theo **cửa sổ trình duyệt**, không theo trang → cuộn trang thì thông báo vẫn đứng yên.
+- `top: 50%; left: 50%`: đặt **góc trên-trái** của khối vào giữa màn hình → khối bị lệch xuống/sang phải.
+- `translate(-50%, -50%)`: kéo ngược lại đúng nửa chiều rộng / nửa chiều cao **của chính nó** → tâm khối trùng tâm màn hình.
+- `z-index`: thứ tự chồng lớp; số lớn hơn nằm trên → thông báo đè lên mọi phần tử khác.
+- Hover nút "Окей": đổi cả `background-color` lẫn `color` (nền đen, chữ trắng) theo yêu cầu đề.
