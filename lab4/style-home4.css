@@ -1,0 +1,140 @@
+/* box-sizing: border-box theo yêu cầu */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+
+    /* sticky footer: main chiếm hết khoảng trống còn lại, footer luôn ở đáy */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    margin: 0;
+    padding: 20px;
+}
+
+header h1 {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+nav {
+    margin: 10px 0 0 0;
+    padding: 0;
+}
+
+nav ul {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 16px;
+    color: #2a6f2a;
+}
+
+a:hover {
+    color: #ff6600;
+}
+
+nav a.active {
+    color: tomato;
+}
+
+main {
+    margin: 0;
+    padding: 20px;
+    flex: 1;
+}
+
+section {
+    margin: 0 0 40px 0;
+    padding: 0;
+}
+
+.about img {
+    width: 400px;
+    height: 300px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    padding: 10px;
+    border: 1px solid #cccccc;
+    text-align: left;
+}
+
+footer {
+    margin: 0;
+    padding: 20px;
+    background-color: black;
+    color: white;
+}
+
+footer a {
+    color: white;
+}
+
+/* ===== ADAPTIVE: главная страница (≤800px / ≤600px / ≤400px theo đề lab2) ===== */
+@media (max-width: 800px) {
+    .about img {
+        width: 500px;
+        height: auto;
+    }
+
+    /* nav: khoảng cách đều giữa các item, không thừa lề ở 2 đầu */
+    nav ul {
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        text-align: center;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav a {
+        font-size: 20px;
+    }
+
+    .about img {
+        width: 100%;
+        height: auto;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    table {
+        font-size: 12px;
+    }
+}

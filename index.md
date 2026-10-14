@@ -322,3 +322,11 @@ transform: translate(-50%, -50%); z-index: 10;
 - `translate(-50%, -50%)`: kéo ngược lại đúng nửa chiều rộng / nửa chiều cao **của chính nó** → tâm khối trùng tâm màn hình.
 - `z-index`: thứ tự chồng lớp; số lớn hơn nằm trên → thông báo đè lên mọi phần tử khác.
 - Hover nút "Окей": đổi cả `background-color` lẫn `color` (nền đen, chữ trắng) theo yêu cầu đề.
+
+==========================================================================
+Điều hướng giữa các lab (sửa sau lab6)
+==========================================================================
+Mỗi lab là 1 thư mục tự chứa. Từ lab3 đến lab6, mỗi thư mục có **trang chủ riêng** `homeN.html` (bản copy trang chủ lab1, đi kèm `style-homeN.css` và ảnh `images/business-lunch.webp`):
+- `homeN.html` → nút "Меню" trỏ `indexN.html` (trang "Собрать ланч" của chính lab đó).
+- `indexN.html` → nút "Главная" trỏ `homeN.html`.
+Nhờ vậy, mở link nộp của lab nào thì bấm qua lại Главная ↔ Меню vẫn luôn ở trong đúng lab đó, không nhảy sang bản cũ của lab khác. lab1 và lab2 giữ nguyên như lúc nộp (`lab1/index1.html` ↔ `lab2/index2.html`).
