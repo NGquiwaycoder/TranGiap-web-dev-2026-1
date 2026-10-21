@@ -15,7 +15,7 @@
 .combos__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px 20px;
+    gap: 20px;
 }
 
 /* 1 combo: flex-контейнер, các món nằm ngang cạnh nhau */
@@ -23,7 +23,17 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
+
+    /* Mỗi combo là 1 khối riêng (nền nhạt + viền + bo góc) để khi lưới
+       co lại trên màn hẹp vẫn nhìn rõ ranh giới giữa các combo */
+    padding: 20px 10px;
+    background-color: #faf8f4;
+    border: 1px solid #e5dfd5;
+    border-radius: 20px;
+
+    /* màn hẹp: món tự xuống dòng bên trong khối thay vì tràn ra ngoài */
+    flex-wrap: wrap;
 }
 
 /* 1 món trong combo: flex-контейнер, trục chính từ trên xuống (ảnh → chữ) */
@@ -34,8 +44,8 @@
 }
 
 .combo__item img {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
 
     /* transition: biến đổi diễn ra mượt trong 0.3s thay vì nhảy ngay */
     transition: transform 0.3s;
