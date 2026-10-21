@@ -20,6 +20,7 @@ const orderForm = document.querySelector('.order__form');
 const orderEmpty = document.querySelector('.order__empty');
 const orderSummary = document.querySelector('.order__summary');
 const orderTotal = document.querySelector('.order__total');
+const deliveryTime = document.getElementById('delivery-time');
 
 // Tìm món trong mảng dishes theo keyword (lấy từ data-dish của thẻ)
 function findDish(keyword) {
@@ -75,6 +76,13 @@ function selectDish(keyword) {
     updateOrder();
 }
 
+// Ô giờ giao chỉ dùng khi chọn "К указанному времени". Ô bị khoá
+// (disabled) thì trình duyệt KHÔNG gửi nó lên server
+function setDeliveryTimeEnabled(isEnabled) {
+    deliveryTime.disabled = !isEnabled;
+    deliveryTime.required = isEnabled;
+}
+
 // Event delegation: bắt click ở document, chỉ xử lý khi bấm nút trong .dish
 document.addEventListener('click', (event) => {
     const button = event.target.closest('.dish button');
@@ -86,6 +94,13 @@ document.addEventListener('click', (event) => {
     selectDish(button.closest('.dish').dataset.dish);
 });
 
+// Đổi radio "Время доставки" → khoá/mở ô giờ giao
+orderForm.addEventListener('change', (event) => {
+    if (event.target.name === 'delivery_type') {
+        setDeliveryTimeEnabled(event.target.value === 'by_time');
+    }
+});
+
 // Nút "Сбросить" xoá luôn các món đã chọn
 orderForm.addEventListener('reset', () => {
     Object.keys(selectedDishes).forEach((category) => {
@@ -94,6 +109,8 @@ orderForm.addEventListener('reset', () => {
     });
 
     updateOrder();
+    setDeliveryTimeEnabled(false);
 });
 
 updateOrder();
+setDeliveryTimeEnabled(false);
