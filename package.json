@@ -1,0 +1,8 @@
+{
+    "name": "trangiap-web-dev-2026-1",
+    "private": true,
+    "description": "Labs + собственный API (Netlify Functions) для курса «Основы веб-технологий»",
+    "dependencies": {
+        "@netlify/blobs": "^11.1.8"
+    }
+}

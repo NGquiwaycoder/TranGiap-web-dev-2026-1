@@ -1,0 +1,8 @@
+# Cấu hình Netlify cho cả repo: các trang lab + API tự làm (thư mục api/)
+[build]
+  publish = "."
+
+# Code server của API nằm trong api/functions (Netlify Functions)
+[functions]
+  directory = "api/functions"
+  node_bundler = "esbuild"
