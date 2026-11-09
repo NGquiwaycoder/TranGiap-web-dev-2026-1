@@ -1,0 +1,86 @@
+/* Khối "Доступные для заказа комбо" — lab10 (thông báo chuyển sang style-base10.css) */
+
+.combos {
+    margin: 0 0 40px 0;
+}
+
+.combos__title {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 30px 0;
+}
+
+/* Khối chứa các combo: grid-контейнер 3 cột */
+.combos__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* 1 combo: flex-контейнер, các món nằm ngang cạnh nhau */
+.combo {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 6px;
+
+
+    padding: 20px 10px;
+    background-color: #faf8f4;
+    border: 1px solid #e5dfd5;
+    border-radius: 20px;
+
+    /* màn hẹp: món tự xuống dòng bên trong khối thay vì tràn ra ngoài */
+    flex-wrap: wrap;
+}
+
+/* 1 món trong combo: flex-контейнер, trục chính từ trên xuống (ảnh → chữ) */
+.combo__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.combo__item img {
+    width: 60px;
+    height: 60px;
+
+    /* transition: biến đổi diễn ra mượt trong 0.3s thay vì nhảy ngay */
+    transition: transform 0.3s;
+}
+
+/* Hover: nhích lên 10px (translateY âm = đi lên) và phóng to 1.2 lần */
+.combo__item img:hover {
+    transform: translateY(-10px) scale(1.2);
+}
+
+.combo__caption {
+    margin: 8px 0 0 0;
+    font-size: 12pt;
+    text-align: center;
+
+    /* giữ "Главное блюдо" trên 1 dòng như mockup */
+    white-space: nowrap;
+}
+
+/* Dòng ghi chú món tráng miệng: nhỏ hơn chữ chú thích đúng 2 pt (đề yêu cầu) */
+.combo__note {
+    margin: 4px 0 0 0;
+    font-size: 10pt;
+    font-style: italic;
+    text-align: center;
+}
+
+/* ===== ADAPTIVE ===== */
+@media (max-width: 800px) {
+    .combos__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .combos__grid {
+        grid-template-columns: 1fr;
+    }
+}

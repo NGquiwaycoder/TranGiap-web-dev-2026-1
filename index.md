@@ -330,3 +330,162 @@ Mỗi lab là 1 thư mục tự chứa. Từ lab3 đến lab6, mỗi thư mục 
 - `homeN.html` → nút "Меню" trỏ `indexN.html` (trang "Собрать ланч" của chính lab đó).
 - `indexN.html` → nút "Главная" trỏ `homeN.html`.
 Nhờ vậy, mở link nộp của lab nào thì bấm qua lại Главная ↔ Меню vẫn luôn ở trong đúng lab đó, không nhảy sang bản cũ của lab khác. lab1 và lab2 giữ nguyên như lúc nộp (`lab1/index1.html` ↔ `lab2/index2.html`).
+
+==========================================================================
+Sửa sau lab6: không gửi giờ giao khi chọn "Как можно скорее"
+(lab4/order4.js, lab5/order5.js, lab6/order6.js + style-formN.css)
+==========================================================================
+- Ô `<input>` có thuộc tính **`disabled`** thì trình duyệt **không gửi** nó khi submit form → chọn "Как можно скорее" thì khoá ô giờ, dữ liệu gửi đi không còn `delivery_time`.
+- `setDeliveryTimeEnabled(isEnabled)`: `disabled = !isEnabled` và `required = isEnabled` → chọn "К указанному времени" thì ô mở ra và bắt buộc nhập.
+- Bắt sự kiện **`change`** trên form: đổi radio `delivery_type` thì gọi hàm trên; lúc tải trang và khi bấm "Сбросить" thì khoá lại.
+- CSS `.order__field:disabled` tô xám ô bị khoá. `:disabled` là pseudo-class giống `:hover`: chỉ áp dụng khi phần tử đang ở trạng thái đó.
+- lab3 không sửa vì lab3 chưa có JavaScript.
+
+==========================================================================
+LAB 7 — Tải danh sách món từ server (API)
+(lab7/dishes7.js + display7.js)
+==========================================================================
+API của lớp: `https://api.rozetkaimg.me/labs/api` (thầy cho dùng thay server trường). `GET /dishes` trả về mảng 30 món dạng JSON:
+`{ "id": 1, "keyword": "gazpacho", "name": "Гаспачо", "price": 195, "category": "soup", "count": "350 г", "image": "https://...", "kind": "veg" }`
+
+### 1. Thay đổi so với lab6
+- Bỏ file `dishes6.js` (mảng viết tay) và ảnh món trong `images/` → **mọi món + ảnh lấy từ server**. Giao diện, lọc, chọn món, tổng tiền, kiểm tra combo giữ nguyên.
+- `dishes7.js`: hàm **`loadDishes()`** (đề yêu cầu đúng tên này) gửi request và lưu kết quả vào biến `dishes`.
+- `display7.js`: `image.src = dish.image` (link ảnh trên server), và chỉ vẽ món **sau khi** tải xong: `loadDishes().then(displayDishes)`.
+
+### 2. `fetch` — gửi HTTP request từ JavaScript
+```js
+const response = await fetch(`${API_URL}/dishes`);
+if (!response.ok) { throw new Error(...); }
+const data = await response.json();
+```
+- `fetch(url)` gửi request GET, trả về **Promise** ("lời hứa" sẽ có kết quả sau, vì mạng cần thời gian).
+- `response.ok`: `true` khi mã trạng thái 200–299. **Lưu ý:** fetch chỉ báo lỗi khi mất mạng; lỗi 404/500 vẫn coi là "thành công" → phải tự kiểm tra `ok`.
+- `response.json()`: đọc thân response và chuyển chuỗi JSON thành object/mảng JS (cũng là Promise).
+
+### 3. Promise, `async`/`await`, `then`/`catch`
+- **`async function`**: hàm bất đồng bộ, luôn trả về Promise. Bên trong được dùng **`await`**: "dừng" hàm tại đó cho tới khi Promise xong, rồi lấy kết quả. Trang **không bị treo** trong lúc chờ.
+- **`.then(f)`**: Promise xong thì chạy `f`. **`.catch(f)`**: có lỗi (ở bất kỳ bước nào trước đó) thì chạy `f` → ở đây hiện thông báo "Не удалось загрузить блюда".
+- `throw new Error('...')`: chủ động báo lỗi; lỗi "rơi" xuống `catch` gần nhất.
+
+### 4. JSON
+- JSON = định dạng văn bản để trao đổi dữ liệu, cú pháp gần giống object JS (key phải có `"..."`).
+- `response.json()` / `JSON.parse(chuỗi)`: chuỗi JSON → object. `JSON.stringify(object)`: object → chuỗi (dùng ở lab8).
+
+### 5. Đổi tên category: `map` + spread `...`
+- Server dùng `main_course`, `salads_starters`, `beverage`; trang dùng `main`, `salad`, `drink` (data-category, selectedDishes, combos). Object `categoryNames` đổi tên ngay khi tải về → các file khác không phải sửa.
+- `data.map(f)`: tạo **mảng mới**, mỗi phần tử = kết quả `f(phần tử cũ)`.
+- `{ ...dish, category: ... }`: **spread**, chép mọi thuộc tính của `dish` sang object mới rồi ghi đè `category`.
+
+### 6. CORS
+- Trang (localhost / netlify.app) và API (rozetkaimg.me) khác domain. Trình duyệt chỉ cho JS đọc response nếu server trả header `Access-Control-Allow-Origin` → API này trả `*` (cho mọi trang) nên fetch được.
+
+==========================================================================
+LAB 8 — localStorage, trang "Оформить заказ", gửi đơn lên server
+(lab8: storage8.js, menu8.js, checkout8.html + checkout8.js)
+==========================================================================
+### 1. Chia file JS
+| File | Dùng ở trang | Nội dung |
+|---|---|---|
+| `dishes8.js` | cả 2 | `API_URL`, **`API_KEY`**, `loadDishes()` |
+| `storage8.js` | cả 2 | `selectedDishes` + lưu/đọc localStorage, `getTotal()` |
+| `display8.js` | cả 2 | `createDishCard(dish, buttonText)` (nút "Добавить"/"Удалить"), `findDish` |
+| `check8.js` | cả 2 | combo + thông báo (giống lab6) |
+| `filter8.js`, `menu8.js` | "Собрать ланч" | lọc, chọn món, panel |
+| `checkout8.js` | "Оформить заказ" | thẻ món + "Удалить", form, gửi đơn |
+
+### 2. `localStorage` — lưu dữ liệu trong trình duyệt
+- Kho key → value của trình duyệt, **còn nguyên sau khi tải lại/đóng trang**, riêng cho từng domain.
+- Chỉ lưu **chuỗi** → object phải `JSON.stringify` khi lưu, `JSON.parse` khi đọc.
+- Đề yêu cầu **chỉ lưu id** món: `{"soup":1,"main":7,"drink":19}` dưới key `lunch-order-lab8` (mỗi lab 1 key riêng vì lab8/9/10 cùng domain Netlify).
+- `saveSelection()` gọi mỗi lần chọn/xoá món; `restoreSelection()` chạy sau `loadDishes()`: lấy id → tìm món đầy đủ trong `dishes` (dữ liệu hiển thị lấy từ server, đúng đề); `clearSelection()` = `localStorage.removeItem` (sau khi đặt hàng thành công).
+- `JSON.parse(null) || {}`: chưa lưu gì thì `getItem` trả `null` → dùng object rỗng.
+
+### 3. Trang "Собрать ланч": panel `position: sticky`
+- Form chuyển sang trang khác; thay bằng panel "Стоимость заказа + Перейти к оформлению" ở cuối `main`.
+- **`position: sticky; bottom: 0`**: bình thường nằm đúng chỗ trong trang; khi cuộn mà nó sắp khuất dưới đáy cửa sổ thì "dính" lại ở đáy (khác `fixed`: sticky chỉ dính trong phạm vi khối cha `main`).
+- Ẩn khi chưa chọn món: `panel.hidden = !hasSelection()`. Vì `.checkout-panel` có `display: flex` (đè lên `hidden`), phải thêm `.checkout-panel[hidden] { display: none; }`.
+- Link bị khoá khi chưa đúng combo: JS **bỏ thuộc tính `href`** (`removeAttribute('href')`). `<a>` không có href không còn là link: không bấm, không Tab tới được. CSS `:not([href])` tô xám.
+- Mở trang: đọc localStorage → viền món đã chọn + tính tiền ngay.
+
+### 4. Trang "Оформить заказ"
+- "Состав заказа": thẻ món đã chọn, nút **"Удалить"** → `selectedDishes[...] = null`, `saveSelection()`, `card.remove()`, cập nhật "Не выбран" + tổng tiền. Không còn món → hiện câu "Ничего не выбрано..." có link sang "Собрать ланч".
+- `orderList.innerHTML = ''`: xoá hết nội dung cũ trước khi vẽ lại.
+- `Object.values(obj)`: mảng các **giá trị** của object (ngược với `Object.keys` — mảng các tên).
+- `reduce((sum, dish) => sum + ..., 0)`: "gộp" mảng thành 1 giá trị (ở đây là tổng tiền), bắt đầu từ 0.
+
+### 5. Gửi đơn: `POST` + `FormData` + `api_key`
+```js
+const formData = new FormData(orderForm);
+formData.append('soup_id', selectedDishes.soup.id);
+await fetch(`${API_URL}/orders?api_key=${API_KEY}`, { method: 'POST', body: formData });
+```
+- `name` các ô trong form đổi theo đúng tên API yêu cầu: `full_name`, `email`, `subscribe` (value `1`), `phone`, `delivery_address`, `delivery_type` (`now`/`by_time`), `delivery_time`, `comment`.
+- **`FormData(form)`**: tự gom mọi ô có `name` (bỏ ô `disabled`, checkbox không tick) → gửi dạng `multipart/form-data`. `append` thêm id món (`soup_id`, `main_course_id`, `salad_id`, `drink_id`, `dessert_id`).
+- **API key**: mã cá nhân (UUIDv4) đặt trong URL (`?api_key=...`, query string). Server dùng nó để biết đơn của ai; mỗi key tối đa 10 đơn. Server của lớp nhận key bất kỳ; có key từ СДО thì thay dòng `API_KEY` trong `dishesN.js`.
+- `event.preventDefault()` trong `submit`: chặn trình duyệt tự gửi form (tải lại trang), để JS tự gửi bằng fetch.
+- Trước khi gửi: kiểm tra combo (`getOrderError`, giống lab6).
+- `try { ... } catch (error) { ... }`: lỗi mạng hoặc server trả `{"error": "..."}` (vd "Время доставки не может быть раньше текущего времени") → hiện thông báo, **giữ** localStorage. Thành công → xoá localStorage, reset form, thông báo "Заказ успешно оформлен!".
+- Nút "Сбросить" ở trang này chỉ xoá chữ đã nhập; bỏ món thì dùng nút "Удалить".
+
+==========================================================================
+LAB 9 — Trang "Заказы": xem, sửa, xoá đơn (modal)
+(lab9/orders9.html + orders9.js + style-orders9.css, notify9.js)
+==========================================================================
+### 1. Bảng lịch sử đơn
+- `GET /orders?api_key=...` → đơn của key này. Sắp xếp mới nhất lên đầu: `b.created_at.localeCompare(a.created_at)` (chuỗi `"YYYY-MM-DD HH:MM:SS"` so sánh như chữ là đúng thứ tự thời gian).
+- Mỗi dòng: số thứ tự (`index + 1`), ngày, tên món (`join(', ')`), tổng tiền (giá lấy từ `dishes` theo id), giờ giao hoặc "Как можно скорее (с 07:00 до 23:00)", 3 nút icon.
+- Đổi ngày: server lưu giờ **UTC** → `new Date('2026-11-02T18:41:23Z')` (Z = UTC) rồi `getDate()/getHours()...` trả theo giờ máy người dùng. `padStart(2, '0')`: `5` → `05`.
+- `<table>`: `thead`/`tbody`, `th` (ô tiêu đề), `td` (ô dữ liệu). `border-collapse: collapse` gộp viền. Khung `.orders__wrapper { overflow-x: auto }` cho cuộn ngang trên điện thoại.
+- Icon: **Bootstrap Icons** (chỉ bộ icon, nạp 1 file CSS từ CDN): `<i class="bi bi-eye">`, `bi-pencil`, `bi-trash`. Nút có `title` + `aria-label` vì không có chữ.
+
+### 2. `data-action` + event delegation
+- Mỗi nút icon có `data-action="view|edit|delete"`, mỗi dòng `<tr data-id="...">`. Một listener trên `tbody`: `closest('[data-action]')` → biết nút nào, `closest('tr').dataset.id` → biết đơn nào (`Number(...)` vì dataset luôn là chuỗi).
+
+### 3. Modal tự viết (không dùng Bootstrap)
+- 3 khối `div.modal` có sẵn trong HTML, mặc định `hidden`; mở = `modal.hidden = false`, đóng = `true`.
+- `.modal`: `position: fixed; inset: 0` (= top/right/bottom/left 0 → phủ kín cửa sổ), nền đen mờ `rgba(0,0,0,0.3)`, `display: flex` + căn giữa → cửa sổ trắng `.modal__window` ở giữa màn hình. `z-index: 20`; thông báo `z-index: 30` để nằm trên modal.
+- Nút "×", "Ок", "Отмена" có thuộc tính `data-close` → 1 listener chung: `button.closest('.modal')` rồi đóng.
+- Nội dung xem chi tiết: `<dl>` (description list) gồm `<dt>` (tên) + `<dd>` (giá trị), xếp 2 cột bằng Grid.
+
+### 4. Sửa đơn: `PUT`
+- Mở modal → điền sẵn dữ liệu: `editForm.elements.full_name.value = order.full_name` (`form.elements.<name>` lấy ô theo `name`; với radio, gán `.value` sẽ tick đúng nút).
+- Chỉ các trường đề cho phép mới có `name` trong form sửa (full_name, email, phone, delivery_address, delivery_type, delivery_time, comment) → `FormData` chỉ gửi những ô đó. `PUT /orders/{id}` chỉ cần gửi phần thay đổi.
+- Ô giờ khoá/mở theo radio, giống form đặt hàng.
+
+### 5. Xoá đơn: `DELETE /orders/{id}`
+- Modal xác nhận "Вы уверены...?" → "Да" gửi request.
+
+### 6. Sau khi thành công / lỗi
+- Hàm chung `sendRequest(path, options)`: thêm `api_key`, kiểm tra `response.ok`, lỗi thì `throw new Error(result.error)`.
+- Thành công: đóng modal, thông báo "Заказ успешно изменён" / "Заказ успешно удалён", rồi tải lại danh sách (`refreshOrders()`) → dòng bị xoá biến mất, dòng sửa được cập nhật.
+- Lỗi: modal giữ nguyên, thông báo lỗi hiện đè lên trên.
+- Thông báo (`showNotification`) tách ra file riêng `notify9.js` vì trang "Заказы" không cần phần kiểm tra combo.
+
+==========================================================================
+LAB 10 — Landing page bằng Bootstrap 5
+(lab10/landing10.html; các trang khác copy từ lab9, "Главная" trỏ về landing)
+==========================================================================
+### 1. Landing page là gì
+Trang giới thiệu 1 trang, mục đích dẫn khách tới 1 hành động (ở đây: sang "Собрать ланч"). 4 khối bắt buộc: **hero** (tên + mô tả + ảnh), **ưu điểm**, **CTA** (call to action — lời kêu gọi + nút), **form phản hồi + liên hệ**.
+
+### 2. Bootstrap 5
+- Thư viện CSS (+ JS) viết sẵn: gắn **class** là có giao diện, gần như không cần CSS riêng (landing10.html không có file CSS nào của mình).
+- Nạp từ CDN: `bootstrap.min.css` + `bootstrap.bundle.min.js` (JS cần cho nút ☰ trên điện thoại).
+
+### 3. Hệ thống lưới (Grid System) — bắt buộc theo đề
+- `.container`: khung giữa trang có lề, rộng theo màn hình. `.row`: 1 hàng. `.col-*`: cột; 1 hàng chia **12 phần**.
+- Breakpoint: `sm` ≥576px, `md` ≥768px, `lg` ≥992px, `xl` ≥1200px. `col-lg-6` = từ màn lg trở lên chiếm 6/12 (nửa hàng); nhỏ hơn → chiếm cả hàng (xếp chồng). → Hero: chữ trái, ảnh phải; điện thoại: chữ trên, ảnh dưới.
+- `row-cols-1 row-cols-md-2 row-cols-lg-4`: số cột mỗi hàng theo bề rộng màn (1 → 2 → 4) — dùng cho 4 thẻ ưu điểm.
+- `g-4`, `g-5`: khoảng cách (gutter) giữa các cột.
+
+### 4. Các class Bootstrap đã dùng
+- **Navbar**: `navbar navbar-expand-md` (từ md menu nằm ngang, nhỏ hơn thì gọn vào nút ☰), `navbar-toggler` + `data-bs-toggle="collapse" data-bs-target="#main-menu"` (bấm ☰ → JS Bootstrap mở/đóng khối `collapse` có id đó), `ms-auto` (margin-start auto → đẩy menu sang phải).
+- **Spacing**: `py-5` (padding trên-dưới), `mb-3`, `mt-3`, `me-2`, `my-4` (m = margin, p = padding; t/b/s/e/x/y = trên/dưới/đầu/cuối/ngang/dọc; số 0–5).
+- **Chữ**: `display-4` (tiêu đề rất to), `lead` (đoạn mở đầu to hơn), `fw-bold`, `text-center`, `h5` (cỡ chữ như h5 cho thẻ khác).
+- **Nút**: `btn btn-danger`, `btn-outline-secondary`, `btn-light`, `btn-lg`.
+- **Card**: `card`, `card-body`, `card-title`, `card-text`; `h-100` (cao 100% → các thẻ trong hàng cao bằng nhau), `shadow-sm`, `border-0`.
+- **Ảnh**: `img-fluid` (co giãn theo khung, không tràn), `rounded-4`, `shadow`.
+- **Màu nền**: `bg-body-tertiary` (xám nhạt), `text-bg-danger` (nền đỏ + chữ trắng tự đủ tương phản), `bg-dark text-white`.
+- **Form**: `form-label`, `form-control` (ô nhập rộng 100%, viền bo). Form phản hồi gửi tới `httpbin.org/post` giống lab3.
+- `list-unstyled`: bỏ dấu chấm đầu dòng của `ul`.
