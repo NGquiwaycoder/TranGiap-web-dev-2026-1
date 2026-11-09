@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №8 — Оформить заказ</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style-base8.css">
+    <link rel="stylesheet" href="style-menu8.css">
+    <link rel="stylesheet" href="style-form8.css">
+
+    <!-- defer: chạy script SAU khi HTML đã dựng xong, theo đúng thứ tự khai báo -->
+    <script src="dishes8.js" defer></script>
+    <script src="storage8.js" defer></script>
+    <script src="display8.js" defer></script>
+    <script src="check8.js" defer></script>
+    <script src="checkout8.js" defer></script>
+</head>
+
+<body>
+
+    <header>
+        <h1>VN FOOD</h1>
+
+        <nav>
+            <ul>
+                <li><a href="home8.html">Главная</a></li>
+                <li><a href="index8.html">Собрать ланч</a></li>
+                <li><a href="checkout8.html" class="active">Оформить заказ</a></li>
+                <li><a href="#contacts">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- Món lấy id từ localStorage, dữ liệu món tải từ server (checkout8.js) -->
+        <section class="menu-section">
+            <h2>Состав заказа</h2>
+
+            <p class="checkout__empty" hidden>
+                Ничего не выбрано. Чтобы добавить блюда в заказ, перейдите на страницу
+                <a href="index8.html">Собрать ланч</a>.
+            </p>
+
+            <ul class="dishes"></ul>
+        </section>
+
+    </main>
+
+    <section class="order">
+        <h2 class="order__title">Оформление заказа</h2>
+
+        <!-- Không có action: checkout8.js tự gửi dữ liệu bằng fetch -->
+        <form class="order__form">
+
+            <!-- Блок с заказом клиента: nội dung do checkout8.js điền -->
+            <div class="order__column">
+                <h3 class="order__subtitle">Ваш заказ</h3>
+
+                <div class="order__summary">
+                    <div class="order__item">
+                        <p class="order__category">Суп</p>
+                        <p class="order__value" id="order-soup">Не выбран</p>
+                    </div>
+
+                    <div class="order__item">
+                        <p class="order__category">Главное блюдо</p>
+                        <p class="order__value" id="order-main">Не выбрано</p>
+                    </div>
+
+                    <div class="order__item">
+                        <p class="order__category">Салат/стартер</p>
+                        <p class="order__value" id="order-salad">Не выбран</p>
+                    </div>
+
+                    <div class="order__item">
+                        <p class="order__category">Напиток</p>
+                        <p class="order__value" id="order-drink">Не выбран</p>
+                    </div>
+
+                    <div class="order__item">
+                        <p class="order__category">Десерт</p>
+                        <p class="order__value" id="order-dessert">Не выбран</p>
+                    </div>
+
+                    <div class="order__item">
+                        <p class="order__category">Стоимость заказа</p>
+                        <p class="order__total">0₽</p>
+                    </div>
+                </div>
+
+                <label class="order__label" for="comment">Комментарии к заказу</label>
+                <textarea class="order__field order__textarea" id="comment" name="comment"></textarea>
+            </div>
+
+            <!-- Блок с данными клиента: name = đúng tên trường mà API yêu cầu -->
+            <div class="order__column">
+                <h3 class="order__subtitle">Ваши данные</h3>
+
+                <label class="order__label" for="name">Имя</label>
+                <input class="order__field" type="text" id="name" name="full_name" required>
+
+                <label class="order__label" for="email">Email</label>
+                <input class="order__field" type="email" id="email" name="email" required>
+
+                <div class="order__choice">
+                    <input type="checkbox" id="subscribe" name="subscribe" value="1" checked>
+                    <label for="subscribe">Получать информацию о скидках и акциях</label>
+                </div>
+
+                <label class="order__label" for="phone">Номер телефона</label>
+                <input class="order__field" type="tel" id="phone" name="phone" required>
+
+                <label class="order__label" for="address">Адрес доставки</label>
+                <input class="order__field" type="text" id="address" name="delivery_address" required>
+                <p class="order__hint">Доставка осуществляется только по Москве</p>
+
+                <fieldset class="order__fieldset">
+                    <legend class="order__label">Время доставки:</legend>
+
+                    <div class="order__choice">
+                        <input type="radio" id="delivery-asap" name="delivery_type" value="now" required>
+                        <label for="delivery-asap">Как можно скорее</label>
+                    </div>
+
+                    <div class="order__choice">
+                        <input type="radio" id="delivery-by-time" name="delivery_type" value="by_time">
+                        <label for="delivery-by-time">К указанному времени</label>
+                    </div>
+                </fieldset>
+
+                <label class="order__label" for="delivery-time">Укажите время доставки</label>
+                <input class="order__field" type="time" id="delivery-time" name="delivery_time"
+                    min="07:00" max="23:00" step="300">
+                <p class="order__hint">Доступное время доставки с 7:00 до 23:00</p>
+
+                <div class="order__buttons">
+                    <button class="order__button" type="reset">Сбросить</button>
+                    <button class="order__button" type="submit">Отправить</button>
+                </div>
+            </div>
+
+        </form>
+    </section>
+
+    <footer id="contacts">
+        <p>Звоните нам.</p>
+        <a href="tel:+79603710486">+7960-371-04-86</a>
+    </footer>
+
+</body>
+</html>
