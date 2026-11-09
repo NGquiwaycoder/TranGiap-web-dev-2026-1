@@ -1,0 +1,187 @@
+/* Lưới món ăn, thẻ món, hover, nút lọc, panel — dùng ở trang "Собрать ланч"
+   và phần "Состав заказа" của trang "Оформить заказ" */
+
+
+.dishes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+
+    /*fix div thanh ul*/
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Khối 1 món ăn (section > ul.dishes > li.dish): Flexbox */
+.dish {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 40px;
+    border-radius: 35px;
+    cursor: pointer;
+    background-color: #ffffff;
+    filter: drop-shadow(17px 19px 24px rgba(0, 0, 0, 0.13));
+
+    /* border trong suốt sẵn để hover không làm lệch kích thước khối */
+    border: 2px solid transparent;
+}
+
+/* Hover: viền tomato quanh khối */
+.dish:hover {
+    border: 2px solid tomato;
+}
+
+/* Thẻ món đã chọn (menu9.js gắn class này): viền giống lúc hover */
+.dish--selected {
+    border: 2px solid tomato;
+}
+
+.dish img {
+    width: 100%;
+    border-radius: 35px;
+
+    /* Ảnh lấy từ server: ép về cùng 1 khung vuông để các thẻ món cao bằng
+       nhau. contain = giữ nguyên cả ảnh, không cắt */
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background-color: #f1eee9;
+}
+
+/* filter9.js gắn class này cho món không đúng kind đang lọc */
+.dish--hidden {
+    display: none;
+}
+
+/* ===== Nút lọc (lab5) ===== */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 20px 0;
+}
+
+.filters__button {
+    padding: 5px 8px;
+    border: none;
+    border-radius: 8px;
+    background-color: transparent;
+    color: #2a6f2a;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.filters__button:hover {
+    color: #ff6600;
+}
+
+/* Nút lọc đang chọn: nền xanh nhạt bo tròn (theo mockup) */
+.filters__button.active {
+    background-color: #d5ecd8;
+    color: #2a6f2a;
+}
+
+.dish__price {
+    font-size: 20px;
+}
+
+.dish__name {
+    font-size: 18px;
+
+    /* flex-grow: nếu tên món dài xuống 2 dòng, phần còn lại (khối lượng + nút)
+       vẫn bị đẩy xuống cùng 1 mức giữa các món trong cùng hàng */
+    flex-grow: 1;
+}
+
+.dish__weight {
+    color: gray;
+}
+
+/* Nút "Добавить" */
+.dish button {
+    background-color: #f1eee9;
+    margin-top: 15px;
+    padding: 10px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+/* Contextual selector: hover vào khối món thì đổi màu nút bên trong */
+.dish:hover button {
+    background-color: tomato;
+}
+
+/* ===== Panel "Перейти к оформлению" (lab9) ===== */
+/* sticky: nằm ở cuối main như phần tử bình thường, nhưng khi cuộn trang thì
+   "dính" vào đáy cửa sổ (bottom: 0) cho tới khi main kết thúc */
+.checkout-panel {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px 20px;
+    background-color: #ffffff;
+    border: 1px solid #e5dfd5;
+    border-radius: 20px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* display: flex ở trên sẽ đè thuộc tính hidden → phải ẩn lại bằng tay */
+.checkout-panel[hidden] {
+    display: none;
+}
+
+.checkout-panel__total {
+    margin: 0;
+    font-size: 20px;
+}
+
+.checkout-panel__link {
+    padding: 10px 30px;
+    border-radius: 10px;
+    background-color: tomato;
+    color: #ffffff;
+}
+
+.checkout-panel__link:hover {
+    color: #ffffff;
+    background-color: #e5533a;
+}
+
+/* Link bị khoá (chưa đủ combo): menu9.js bỏ href → xám, không bấm được */
+.checkout-panel__link:not([href]) {
+    background-color: #dddddd;
+    color: #888888;
+    cursor: not-allowed;
+}
+
+/* Trang "Оформить заказ": dòng chữ khi chưa chọn món nào */
+.checkout__empty {
+    font-size: 18px;
+}
+
+/* ===== ADAPTIVE riêng cho trang "Собрать ланч" ===== */
+@media (max-width: 800px) {
+    .dishes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .menu-section h2 {
+        text-align: center;
+    }
+
+    .dishes {
+        grid-template-columns: 1fr;
+    }
+}
