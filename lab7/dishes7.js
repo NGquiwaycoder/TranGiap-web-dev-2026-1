@@ -1,5 +1,7 @@
-// Danh sách món giờ lấy từ server (API), không còn viết sẵn trong file nữa
-const API_URL = 'https://api.rozetkaimg.me/labs/api';
+// Danh sách món giờ lấy từ server (API), không còn viết sẵn trong file nữa.
+// API tự làm chạy cùng site Netlify (thư mục api/ ở gốc repo) → chỉ cần
+// đường dẫn bắt đầu bằng "/", không cần ghi domain
+const API_URL = '/labs/api';
 
 // Tên category trên server khác tên dùng trong trang (data-category,
 // selectedDishes...) → đổi về tên của trang ngay khi tải về

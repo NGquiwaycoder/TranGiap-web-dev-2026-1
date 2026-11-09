@@ -489,3 +489,49 @@ Trang giới thiệu 1 trang, mục đích dẫn khách tới 1 hành động (�
 - **Màu nền**: `bg-body-tertiary` (xám nhạt), `text-bg-danger` (nền đỏ + chữ trắng tự đủ tương phản), `bg-dark text-white`.
 - **Form**: `form-label`, `form-control` (ô nhập rộng 100%, viền bo). Form phản hồi gửi tới `httpbin.org/post` giống lab3.
 - `list-unstyled`: bỏ dấu chấm đầu dòng của `ul`.
+
+==========================================================================
+API tự làm (thay cho API khoá học đang không hoạt động)
+(api/functions/api.mjs, api/dishes.json, api/images/, netlify.toml, package.json)
+==========================================================================
+### 1. API gồm 3 phần
+| Phần | Ở đâu |
+|---|---|
+| **Dữ liệu** món ăn | `api/dishes.json` (30 món) + ảnh `api/images/...` (ảnh từ menu.zip của khoá học, đổi sang webp 640px) |
+| **Chương trình** nhận request, kiểm tra, lưu đơn | `api/functions/api.mjs` (Netlify Functions) |
+| **Địa chỉ** + máy chạy 24/7 | Chính site Netlify: `https://plsgivemea5.netlify.app/labs/api/...` |
+
+Địa chỉ và định dạng giống hệt API trong đề → code lab chỉ đổi đúng 1 dòng: `const API_URL = '/labs/api';` (đường dẫn bắt đầu bằng `/` = cùng domain với trang, không cần ghi domain, không dính CORS).
+
+### 2. Netlify Functions
+- Hàm JavaScript chạy **trên server của Netlify** (không chạy trong trình duyệt), mỗi khi có request tới đường dẫn đã khai báo:
+```js
+export default async function api(request) { ... return new Response(...); }
+export const config = { path: ['/labs/api', '/labs/api/*'] };
+```
+- `request`: thông tin request (method GET/POST/PUT/DELETE, URL, dữ liệu gửi lên). Hàm trả về `Response` (nội dung JSON + mã trạng thái 200/400/401/404).
+- `netlify.toml`: báo Netlify code server nằm ở `api/functions`. `package.json`: khai báo thư viện cần cài (`@netlify/blobs`); Netlify tự cài khi deploy. `node_modules/` (thư viện đã cài) không đưa lên git.
+
+### 3. Netlify Blobs — nơi lưu đơn hàng
+- Kho key → value trên server Netlify (giống localStorage nhưng nằm trên server, ai mở trang cũng dùng chung).
+- Store `orders`: key = `api_key`, value = mảng đơn của key đó → mỗi key là 1 "người dùng", không thấy đơn của nhau. Store `meta`: id cuối cùng đã cấp (id tăng dần).
+- `consistency: 'strong'`: vừa lưu xong đọc lại là thấy ngay.
+
+### 4. Bộ định tuyến (router)
+- `/labs/api/<resource>/<id>`: tách đường dẫn → `dishes` hoặc `orders`, có id hay không, rồi xét method:
+
+| Request | Việc làm |
+|---|---|
+| `GET /dishes`, `/dishes/{id}` | trả món (ảnh đổi thành link đầy đủ theo domain hiện tại) |
+| `GET /orders` | đơn của key, mới nhất trước |
+| `POST /orders` | kiểm tra rồi tạo đơn |
+| `GET/PUT/DELETE /orders/{id}` | xem / sửa / xoá 1 đơn |
+
+### 5. Kiểm tra giống API trong đề
+- Thiếu `api_key` → **401** + câu "Для получения доступа к API...".
+- Thiếu `full_name`/`email`/`phone`/`delivery_address`, `delivery_type` không phải `now`/`by_time` → **400**.
+- `delivery_time`: bắt buộc khi `by_time`, dạng `HH:MM`, 07:00–23:00, bước 5 phút, không sớm hơn giờ hiện tại (giờ Moskva).
+- Món: id phải tồn tại, đúng loại (vd không đặt súp vào `main_course_id`), cả đơn khớp 1 trong 5 combo.
+- Tối đa 10 đơn / key. PUT chỉ nhận các trường đề cho sửa.
+- Lỗi được báo bằng `throw new ApiError(400, '...')` → bắt ở 1 chỗ trong router, trả `{ "error": "..." }` đúng như API cũ → code lab 8–9 hiện thông báo lỗi mà không cần sửa.
+- `class ApiError extends Error`: tạo loại lỗi riêng có thêm mã HTTP (`status`); `extends` = kế thừa mọi thứ của `Error`, `super(message)` gọi hàm khởi tạo của lớp cha.

@@ -1,5 +1,7 @@
-// Địa chỉ API và khoá API_KEY dùng chung cho mọi request tới server
-const API_URL = 'https://api.rozetkaimg.me/labs/api';
+// Địa chỉ API và khoá API_KEY dùng chung cho mọi request tới server.
+// API tự làm chạy cùng site Netlify (thư mục api/ ở gốc repo) → chỉ cần
+// đường dẫn bắt đầu bằng "/", không cần ghi domain
+const API_URL = '/labs/api';
 
 // Khoá cá nhân (UUIDv4): server dựa vào nó để biết đơn nào là của ai.
 // Có khoá từ СДО thì thay đúng dòng này
